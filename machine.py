@@ -4,7 +4,7 @@ from states import State
 class Machine:
     def __init__(self):
         self.states = []
-        self.current_state = None
+        self.current_states = None
         self.starting_state = None
         self.end_states = []
         self.start_dead_state()
@@ -51,7 +51,10 @@ class Machine:
         )
 
     def realize_transition(self, symbol):
-        self.current_state = self.get_state(self.current_state.get_transition(symbol))
+        transition = []
+        for state in self.current_states:
+            transition.append(self.get_state(self.state.get_transition(symbol)))
+        self.current_states = transition
 
     def check_transition(self, state_identifier, symbol):
         return self.get_state(state_identifier).get_transition(symbol)
@@ -93,3 +96,12 @@ class Machine:
 
         # Combine all parts into a single string with semicolons
         return ";".join(parts)
+
+    def start_machine(self):
+        self.current_state = self.starting_state
+
+    def execute_machine(self, input_string):
+        self.start_machine()
+        for symbol in input_string:
+            self.realize_transition(symbol)
+        return self.current_state.is_final()
