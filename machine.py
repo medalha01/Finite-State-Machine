@@ -1,4 +1,4 @@
-from states.py import State
+from states import State
 
 
 class Machine:
@@ -8,6 +8,7 @@ class Machine:
         self.starting_state = None
         self.end_states = []
         self.start_dead_state()
+        self.number_of_states = 0
 
     def get_state(self, state_identifier):
         for state in self.states:
@@ -15,13 +16,17 @@ class Machine:
                 return state
         return None
 
+    def set_number_of_states(self, number):
+        self.number_of_states = number
+
     def start_dead_state(self):
         self.dead_state = State("dead")
         self.dead_state.set_dead()
         self.states.append(self.dead_state)
 
-    def add_state(self, state_identifier):
-        self.states.append(State(state_identifier))
+    def create_state(self, state_identifier):
+        if self.get_state(state_identifier) == None:
+            self.states.append(State(state_identifier))
 
     def add_transition(self, state_identifier, symbol, next_state_identifier):
         self.get_state(state_identifier).add_transition(symbol, next_state_identifier)
@@ -49,3 +54,37 @@ class Machine:
 
     def check_transition(self, state_identifier, symbol):
         return self.get_state(state_identifier).get_transition(symbol)
+
+    def to_string(self):
+        # Create a list to hold the parts of the string representation
+        parts = []
+
+        # Add the number of states as the first parameter
+        parts.append(str(self.number_of_states))
+
+        # Add the starting state as the second parameter
+        parts.append(str(self.starting_state.state_identifier))
+
+        # Add the end states as the third parameter
+        for state in self.end_states:
+            end_states_str = ",".join(state.state_identifier)
+
+        parts.append("{" + end_states_str + "}")
+
+        # Add the transitions as subsequent parameters
+        for state in self.states:
+            elements = state.get_transitions()
+
+            for transition in elements:
+                parts.append(
+                    ",".join(
+                        str(state.state_identifier),
+                    )
+                    .join(
+                        str(transition[0]),
+                    )
+                    .join(str(transition[1]))
+                )
+
+        # Combine all parts into a single string with semicolons
+        return ";".join(parts)
