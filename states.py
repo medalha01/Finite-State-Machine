@@ -1,13 +1,13 @@
-class States:
+class State:
     def __init__(self, state_identifier):
         self.state_identifier = state_identifier
-        self.transitions = []
+        self.transitions = list()
         self.final = False
         self.starting_state = False
         self.dead_state = False
 
     def add_transition(self, symbol, state_identifier):
-        self.transitions.append = (symbol, state_identifier)
+        self.transitions.append((symbol, state_identifier))
 
     def set_final(self):
         self.final = True
