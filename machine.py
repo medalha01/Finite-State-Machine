@@ -9,6 +9,7 @@ class Machine:
         self.end_states = []
         self.start_dead_state()
         self.number_of_states = 0
+        self.alphabet = ""
 
     def get_state(self, state_identifier):
         for state in self.states:
@@ -55,6 +56,9 @@ class Machine:
     def check_transition(self, state_identifier, symbol):
         return self.get_state(state_identifier).get_transition(symbol)
 
+    def create_alphabet(self, alphabet):
+        self.alphabet = alphabet
+
     def to_string(self):
         # Create a list to hold the parts of the string representation
         parts = []
@@ -71,20 +75,21 @@ class Machine:
 
         parts.append("{" + end_states_str + "}")
 
+        parts.append("{" + self.alphabet + "}")
+
         # Add the transitions as subsequent parameters
         for state in self.states:
             elements = state.get_transitions()
 
             for transition in elements:
-                parts.append(
-                    ",".join(
-                        str(state.state_identifier),
-                    )
-                    .join(
-                        str(transition[0]),
-                    )
-                    .join(str(transition[1]))
+                transition_string = ",".join(
+                    [
+                        state.state_identifier,
+                        transition[0],
+                        transition[1],
+                    ]
                 )
+                parts.append(transition_string)
 
         # Combine all parts into a single string with semicolons
         return ";".join(parts)

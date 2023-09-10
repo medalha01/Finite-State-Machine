@@ -24,6 +24,7 @@ class MachineFactory:
             machine.create_state(state)
             machine.add_end_state(state)
 
+        machine.create_alphabet(parameters[3])
         for transition in parameters[4:]:
             transition_elements = transition.split(",")
             machine.create_state(transition_elements[0])
