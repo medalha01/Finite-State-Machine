@@ -36,3 +36,29 @@ class MachineFactory:
             )
 
         return machine
+
+    @staticmethod
+    def machine_determizaton(machine):
+        new_machine = Machine()
+        new_machine.set_number_of_states(machine.number_of_states)
+
+        new_machine.create_state(machine.starting_state.state_identifier)
+        new_machine.set_starting_state(machine.starting_state.state_identifier)
+
+        for state in machine.end_states:
+            new_machine.create_state(state.state_identifier)
+            new_machine.add_end_state(state.state_identifier)
+
+        new_machine.create_alphabet(machine.alphabet)
+
+        for state in machine.states:
+            for symbol in machine.alphabet:
+                if state.get_transition(symbol) != None:
+                    new_machine.create_state(state.get_transition(symbol))
+                    new_machine.add_transition(
+                        state.state_identifier,
+                        symbol,
+                        state.get_transition(symbol),
+                    )
+
+        return new_machine

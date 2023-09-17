@@ -105,3 +105,20 @@ class Machine:
         for symbol in input_string:
             self.realize_transition(symbol)
         return self.current_state.is_final()
+
+    def check_transition(self, symbol):
+        transition = []
+        for state in self.current_states:
+            transition.append(self.get_state(self.state.get_transition(symbol)))
+        return transition
+
+    def execute_machine_step(self, symbol):
+        transition = []
+        transition = self.check_transition(symbol)
+        return transition
+
+    def set_current_state(self, states):
+        self.current_states = states
+
+    def get_alphabet(self):
+        return self.alphabet
