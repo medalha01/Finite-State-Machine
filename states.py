@@ -31,6 +31,7 @@ class State:
                 transitions.append(transition[1])
         if len(transitions) == 0:
             return "dead"
+        return transitions
 
     def get_transitions(self):
         return self.transitions
