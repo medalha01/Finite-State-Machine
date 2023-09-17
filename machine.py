@@ -115,6 +115,8 @@ class Machine:
     def check_transition(self, symbol):
         transition = []
         for state in self.current_states:
+            if state == None:
+                return transition
             var = state.get_multiples_transitions(symbol)
             for item in var:
                 transition.append(self.get_state(item))
@@ -141,6 +143,8 @@ class Machine:
     def states_to_identifier(self, states):
         auxiliar_state_string = ""
         for state in states:
-            auxiliar_state_string = auxiliar_state_string.join(state.identifier)
+            if state == None:
+                return auxiliar_state_string
+            auxiliar_state_string = auxiliar_state_string.join(state.state_identifier)
 
         return auxiliar_state_string

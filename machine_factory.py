@@ -55,19 +55,19 @@ class MachineFactory:
 
         for symbol in alphabet:
             list_of_states = machine.execute_machine_step(symbol)
-            transition = tuple([machine.get_current_state(), symbol, list_of_states])
+            transition = tuple([machine.current_states, symbol, list_of_states])
             transition_tree.append(transition)
 
         ##fazer por profundidade se existir uma tupla igual a uma na lista break
         counter = 0
         while True:
+            if counter >= len(transition_tree):
+                break
             actual_state = transition_tree[counter]
             machine.set_current_state(actual_state[2])
             for symbol in alphabet:
                 list_of_states = machine.execute_machine_step(symbol)
-                transition = tuple(
-                    [machine.get_current_state(), symbol, list_of_states]
-                )
+                transition = tuple([machine.current_states, symbol, list_of_states])
                 if transition not in transition_tree:
                     transition_tree.append(transition)
             counter += 1
@@ -90,5 +90,9 @@ class MachineFactory:
                 transition_and_state[1],
                 secondary_state_identifier,
             )
+
+        new_machine.add_end_state(machine.starting_state.state_identifier)
+        new_machine.set_number_of_states(len(new_machine.states))
+        new_machine.alphabet = machine.get_alphabet()
 
         return new_machine
