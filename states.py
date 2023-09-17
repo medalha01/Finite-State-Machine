@@ -24,6 +24,14 @@ class State:
                 return transition[1]
         return "dead"
 
+    def get_multiples_transitions(self, symbol):
+        transitions = list()
+        for transition in self.transitions:
+            if transition[0] == symbol:
+                transitions.append(transition[1])
+        if len(transitions) == 0:
+            return "dead"
+
     def get_transitions(self):
         return self.transitions
 

@@ -4,7 +4,7 @@ from states import State
 class Machine:
     def __init__(self):
         self.states = []
-        self.current_states = None
+        self.current_states = list()
         self.starting_state = None
         self.end_states = []
         self.start_dead_state()
@@ -30,7 +30,13 @@ class Machine:
             self.states.append(State(state_identifier))
 
     def add_transition(self, state_identifier, symbol, next_state_identifier):
-        self.get_state(state_identifier).add_transition(symbol, next_state_identifier)
+        if (
+            self.get_state(state_identifier).get_transition(symbol)
+            != next_state_identifier
+        ):
+            self.get_state(state_identifier).add_transition(
+                symbol, next_state_identifier
+            )
 
     def set_starting_state(self, state_identifier):
         state = self.get_state(state_identifier)
@@ -57,7 +63,7 @@ class Machine:
         self.current_states = transition
 
     def check_transition(self, state_identifier, symbol):
-        return self.get_state(state_identifier).get_transition(symbol)
+        return self.get_state(state_identifier).get_multiples_transitions(symbol)
 
     def create_alphabet(self, alphabet):
         self.alphabet = alphabet
@@ -98,7 +104,7 @@ class Machine:
         return ";".join(parts)
 
     def start_machine(self):
-        self.current_state = self.starting_state
+        self.current_states.append(self.starting_state)
 
     def execute_machine(self, input_string):
         self.start_machine()
@@ -109,12 +115,16 @@ class Machine:
     def check_transition(self, symbol):
         transition = []
         for state in self.current_states:
-            transition.append(self.get_state(self.state.get_transition(symbol)))
+            var = state.get_multiples_transitions(symbol)
+            for item in var:
+                transition.append(self.get_state(item))
         return transition
 
     def execute_machine_step(self, symbol):
         transition = []
-        transition = self.check_transition(symbol)
+        for item in self.check_transition(symbol):
+            transition.append(item)
+
         return transition
 
     def set_current_state(self, states):
@@ -122,3 +132,15 @@ class Machine:
 
     def get_alphabet(self):
         return self.alphabet
+
+    def is_final(self):
+        for state in self.current_states:
+            if state.is_final():
+                return True
+
+    def states_to_identifier(self, states):
+        auxiliar_state_string = ""
+        for state in states:
+            auxiliar_state_string = auxiliar_state_string.join(state.identifier)
+
+        return auxiliar_state_string

@@ -38,15 +38,18 @@ class MachineFactory:
         return machine
 
     @staticmethod
-    def machine_determizaton(machine: Machine):
+    def machine_determination(machine: Machine):
         new_machine = Machine()
 
         transition_tree = list()
 
-        machine.start_machine()
+        end_states = list()
 
-        new_machine.create_state(machine.get_starting_state().state_identifier)
-        machine.set_starting_state(machine.get_starting_state().state_identifier)
+        machine.start_machine()
+        print(machine.current_states[0].state_identifier)
+
+        new_machine.create_state(machine.starting_state.state_identifier)
+        new_machine.set_starting_state(machine.starting_state.state_identifier)
 
         alphabet = machine.get_alphabet()
 
@@ -71,5 +74,21 @@ class MachineFactory:
 
             if counter > 50:
                 break
+
+        for transition_and_state in transition_tree:
+            primary_state_identifier = new_machine.states_to_identifier(
+                transition_and_state[0]
+            )
+            secondary_state_identifier = new_machine.states_to_identifier(
+                transition_and_state[2]
+            )
+            new_machine.create_state(primary_state_identifier)
+            new_machine.create_state(secondary_state_identifier)
+
+            new_machine.add_transition(
+                primary_state_identifier,
+                transition_and_state[1],
+                secondary_state_identifier,
+            )
 
         return new_machine
