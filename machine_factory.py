@@ -38,27 +38,38 @@ class MachineFactory:
         return machine
 
     @staticmethod
-    def machine_determizaton(machine):
+    def machine_determizaton(machine: Machine):
         new_machine = Machine()
-        new_machine.set_number_of_states(machine.number_of_states)
 
-        new_machine.create_state(machine.starting_state.state_identifier)
-        new_machine.set_starting_state(machine.starting_state.state_identifier)
+        transition_tree = list()
 
-        for state in machine.end_states:
-            new_machine.create_state(state.state_identifier)
-            new_machine.add_end_state(state.state_identifier)
+        machine.start_machine()
 
-        new_machine.create_alphabet(machine.alphabet)
+        new_machine.create_state(machine.get_starting_state().state_identifier)
+        machine.set_starting_state(machine.get_starting_state().state_identifier)
 
-        for state in machine.states:
-            for symbol in machine.alphabet:
-                if state.get_transition(symbol) != None:
-                    new_machine.create_state(state.get_transition(symbol))
-                    new_machine.add_transition(
-                        state.state_identifier,
-                        symbol,
-                        state.get_transition(symbol),
-                    )
+        alphabet = machine.get_alphabet()
+
+        for symbol in alphabet:
+            list_of_states = machine.execute_machine_step(symbol)
+            transition = tuple([machine.get_current_state(), symbol, list_of_states])
+            transition_tree.append(transition)
+
+        ##fazer por profundidade se existir uma tupla igual a uma na lista break
+        counter = 0
+        while True:
+            actual_state = transition_tree[counter]
+            machine.set_current_state(actual_state[2])
+            for symbol in alphabet:
+                list_of_states = machine.execute_machine_step(symbol)
+                transition = tuple(
+                    [machine.get_current_state(), symbol, list_of_states]
+                )
+                if transition not in transition_tree:
+                    transition_tree.append(transition)
+            counter += 1
+
+            if counter > 50:
+                break
 
         return new_machine
