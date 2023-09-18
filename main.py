@@ -1,6 +1,4 @@
-from machine import Machine
 from machine_factory import MachineFactory
-from states import State
 
 
 def main():
