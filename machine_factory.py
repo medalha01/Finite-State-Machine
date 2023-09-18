@@ -51,7 +51,6 @@ class MachineFactory:
         """
         new_machine = Machine()
         transition_tree = []
-        end_states = []
 
         machine.start_machine()
         new_machine.create_state(machine.starting_state.state_identifier)
