@@ -82,6 +82,8 @@ class MachineFactory:
             if counter > 50:
                 break
 
+        end_states_identifier = machine.get_end_states_identifiers()
+
         for transition_and_state in transition_tree:
             primary_state_identifier = new_machine.states_to_identifier(
                 transition_and_state[0]
@@ -100,7 +102,14 @@ class MachineFactory:
             ):
                 continue
             new_machine.create_state(primary_state_identifier)
+            for identifier in end_states_identifier:
+                if identifier in primary_state_identifier:
+                    new_machine.add_end_state(primary_state_identifier)
+                    print(primary_state_identifier)
             new_machine.create_state(secondary_state_identifier)
+            for identifier in end_states_identifier:
+                if identifier in secondary_state_identifier:
+                    new_machine.add_end_state(secondary_state_identifier)
 
             new_machine.add_transition(
                 primary_state_identifier,
@@ -108,8 +117,7 @@ class MachineFactory:
                 secondary_state_identifier,
             )
 
-        new_machine.add_end_state(machine.starting_state.state_identifier)
-        new_machine.set_number_of_states(len(new_machine.states))
+        new_machine.set_number_of_states(len(new_machine.states) - 1)
         new_machine.alphabet = machine.get_alphabet()
 
         return new_machine

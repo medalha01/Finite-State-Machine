@@ -45,8 +45,9 @@ class Machine:
 
     def add_end_state(self, state_identifier):
         state = self.get_state(state_identifier)
-        state.set_final()
-        self.end_states.append(state)
+        if state not in self.end_states:
+            state.set_final()
+            self.end_states.append(state)
 
     def remove_state(self, state_identifier):
         self.states.remove(get_state(state_identifier))
@@ -79,8 +80,7 @@ class Machine:
         parts.append(str(self.starting_state.state_identifier))
 
         # Add the end states as the third parameter
-        for state in self.end_states:
-            end_states_str = ",".join(state.state_identifier)
+        end_states_str = "".join(state.state_identifier for state in self.end_states)
 
         parts.append("{" + end_states_str + "}")
 
@@ -153,3 +153,9 @@ class Machine:
             if state != None:
                 auxiliar_state_string = auxiliar_state_string + state.state_identifier
         return auxiliar_state_string
+
+    def get_end_states_identifiers(self):
+        end_states_identifier = []
+        for state in self.end_states:
+            end_states_identifier.append(state.state_identifier)
+        return end_states_identifier
