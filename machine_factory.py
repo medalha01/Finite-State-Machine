@@ -55,6 +55,7 @@ class MachineFactory:
 
         for symbol in alphabet:
             list_of_states = machine.execute_machine_step(symbol)
+
             transition = tuple([machine.current_states, symbol, list_of_states])
             transition_tree.append(transition)
 
@@ -68,6 +69,12 @@ class MachineFactory:
             for symbol in alphabet:
                 list_of_states = machine.execute_machine_step(symbol)
                 transition = tuple([machine.current_states, symbol, list_of_states])
+                print("Check")
+                for i in machine.current_states:
+                    print(i.state_identifier)
+                print(symbol)
+                for i in list_of_states:
+                    print(i.state_identifier)
                 if transition not in transition_tree:
                     transition_tree.append(transition)
             counter += 1

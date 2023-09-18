@@ -22,7 +22,7 @@ class State:
         for transition in self.transitions:
             if transition[0] == symbol:
                 return transition[1]
-        return "dead"
+        return None
 
     def get_multiples_transitions(self, symbol):
         transitions = list()
@@ -30,7 +30,7 @@ class State:
             if transition[0] == symbol:
                 transitions.append(transition[1])
         if len(transitions) == 0:
-            return "dead"
+            return None
         return transitions
 
     def get_transitions(self):
