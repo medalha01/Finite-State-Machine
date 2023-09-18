@@ -72,7 +72,8 @@ class MachineFactory:
         machine.start_machine()
         new_machine.create_state(machine.starting_state.state_identifier)
         new_machine.set_starting_state(machine.starting_state.state_identifier)
-
+        ##TODO check for epsilon and make epsilon* transitions automatic when the symbol is referenced
+        ## or create a new machine where the new states are epsilon* transitions
         alphabet = machine.get_alphabet()
 
         for symbol in alphabet:
