@@ -79,7 +79,7 @@ class MachineFactory:
                     transition_tree.append(transition)
             counter += 1
 
-            if counter > 50:
+            if counter > 900:
                 break
 
         end_states_identifier = machine.get_end_states_identifiers()

@@ -110,7 +110,10 @@ class Machine:
         self.start_machine()
         for symbol in input_string:
             self.realize_transition(symbol)
-        return self.current_state.is_final()
+        for state in self.current_states:
+            if state.is_final():
+                return True
+        return False
 
     def check_transition(self, symbol):
         transition = []
