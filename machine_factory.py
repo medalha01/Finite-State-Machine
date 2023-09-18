@@ -38,7 +38,17 @@ class MachineFactory:
         return machine
 
     @staticmethod
-    def machine_determination(machine: Machine):
+    def machine_determination(machine: Machine) -> Machine:
+        """
+        Determines the state transitions of a given machine and returns a new machine
+        with the updated transitions.
+
+        Args:
+            machine (Machine): The machine to determine the state transitions for.
+
+        Returns:
+            Machine: The new machine with the updated transitions.
+        """
         new_machine = Machine()
         transition_tree = []
         end_states = []
