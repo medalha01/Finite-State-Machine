@@ -150,8 +150,6 @@ class Machine:
     def states_to_identifier(self, states):
         auxiliar_state_string = ""
         for state in states:
-            if state == None:
-                return auxiliar_state_string
-            auxiliar_state_string = auxiliar_state_string.join(state.state_identifier)
-
+            if state != None:
+                auxiliar_state_string = auxiliar_state_string + state.state_identifier
         return auxiliar_state_string

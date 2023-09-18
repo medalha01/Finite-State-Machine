@@ -86,6 +86,10 @@ class MachineFactory:
             primary_state_identifier = new_machine.states_to_identifier(
                 transition_and_state[0]
             )
+            for i in transition_and_state[0]:
+                print(i.state_identifier)
+            print("---")
+            print(primary_state_identifier)
             secondary_state_identifier = new_machine.states_to_identifier(
                 transition_and_state[2]
             )
