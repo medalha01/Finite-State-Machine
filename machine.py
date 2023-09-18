@@ -165,7 +165,9 @@ class Machine:
         """
         transition = []
         for state in self.current_states:
-            transition.append(self.get_state(state.get_transition(symbol)))
+            new_state = self.get_state(state.get_transition(symbol))
+            if new_state not in transition:
+                transition.append(new_state)
         self.current_states = transition
 
     def check_transition_multiples(self, state_identifier, symbol):
@@ -204,13 +206,17 @@ class Machine:
         parts.append(str(self.number_of_states))
 
         # Add the starting state as the second parameter
-        parts.append(str(self.starting_state.state_identifier))
+        parts.append("{" + self.starting_state.state_identifier + "}")
 
         # Add the end states as the third parameter
-        end_states_str = "".join(state.state_identifier for state in self.end_states)
+        end_states_str = (
+            "{{"
+            + "},{".join(state.state_identifier for state in self.end_states)
+            + "}}"
+        )
+        parts.append(end_states_str)
 
-        parts.append("{" + end_states_str + "}")
-
+        # Add the alphabet as the fourth parameter
         parts.append("{" + self.alphabet + "}")
 
         # Add the transitions as subsequent parameters
@@ -218,12 +224,11 @@ class Machine:
             elements = state.get_transitions()
 
             for transition in elements:
-                transition_string = ",".join(
-                    [
-                        state.state_identifier,
-                        transition[0],
-                        transition[1],
-                    ]
+                transition_string = "{},{},{}".format(
+                    state.state_identifier,
+                    transition[0],  # Input symbol for the transition
+                    transition[1],  # Next state for the transition
+                    # Action for the transition
                 )
                 parts.append(transition_string)
 
@@ -278,7 +283,9 @@ class Machine:
                     continue
                 else:
                     for item in var:
-                        transition.append(self.get_state(item))
+                        new_state = self.get_state(item)
+                        if new_state not in transition:
+                            transition.append(new_state)
 
         return transition
 
