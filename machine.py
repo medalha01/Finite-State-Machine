@@ -4,7 +4,7 @@ from states import State
 class Machine:
     def __init__(self):
         self.states = []
-        self.current_states = list()
+        self.current_states = []
         self.starting_state = None
         self.end_states = []
         self.start_dead_state()
@@ -26,7 +26,7 @@ class Machine:
         self.states.append(self.dead_state)
 
     def create_state(self, state_identifier):
-        if self.get_state(state_identifier) == None:
+        if self.get_state(state_identifier) is None:
             self.states.append(State(state_identifier))
 
     def add_transition(self, state_identifier, symbol, next_state_identifier):
@@ -50,7 +50,7 @@ class Machine:
             self.end_states.append(state)
 
     def remove_state(self, state_identifier):
-        self.states.remove(get_state(state_identifier))
+        self.states.remove(self.get_state(state_identifier))
 
     def remove_transition(self, state_identifier, symbol, next_state_identifier):
         return self.get_state(state_identifier).remove_transition(
@@ -60,10 +60,10 @@ class Machine:
     def realize_transition(self, symbol):
         transition = []
         for state in self.current_states:
-            transition.append(self.get_state(self.state.get_transition(symbol)))
+            transition.append(self.get_state(state.get_transition(symbol)))
         self.current_states = transition
 
-    def check_transition(self, state_identifier, symbol):
+    def check_transition_multiples(self, state_identifier, symbol):
         return self.get_state(state_identifier).get_multiples_transitions(symbol)
 
     def create_alphabet(self, alphabet):
@@ -118,9 +118,9 @@ class Machine:
     def check_transition(self, symbol):
         transition = []
         for state in self.current_states:
-            if state != None:
+            if state is not None:
                 var = state.get_multiples_transitions(symbol)
-                if var == None:
+                if var is None:
                     continue
                 else:
                     for item in var:
@@ -149,7 +149,7 @@ class Machine:
     def states_to_identifier(self, states):
         auxiliar_state_string = ""
         for state in states:
-            if state != None:
+            if state is not None:
                 auxiliar_state_string = auxiliar_state_string + state.state_identifier
         return auxiliar_state_string
 

@@ -1,11 +1,28 @@
-from machine import Machine
-from states import State
+"""
+This module contains the MachineFactory class for creating Machine objects.
+"""
+
 import re
+
+from machine import Machine
 
 
 class MachineFactory:
+    """
+    A factory class for creating Machine objects.
+    """
+
     @staticmethod
     def entry_parser(entry):
+        """
+        Parses an entry string and returns a Machine object.
+
+        Parameters:
+            entry (str): The string to be parsed.
+
+        Returns:
+            Machine: The parsed Machine object.
+        """
         machine = Machine()
 
         # Split the string by semicolon, but only if it's not inside curly braces
