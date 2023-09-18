@@ -115,11 +115,13 @@ class Machine:
     def check_transition(self, symbol):
         transition = []
         for state in self.current_states:
-            if state == None:
-                return transition
-            var = state.get_multiples_transitions(symbol)
-            for item in var:
-                transition.append(self.get_state(item))
+            if state != None:
+                var = state.get_multiples_transitions(symbol)
+                print("start")
+                for item in var:
+                    print(item)
+                    transition.append(self.get_state(item))
+                print("over")
         return transition
 
     def execute_machine_step(self, symbol):

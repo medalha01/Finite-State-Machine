@@ -5,9 +5,9 @@ from states import State
 
 def main():
     machine = MachineFactory.entry_parser("4;A;{D};{a,b};A,a,A;A,a,B;A,b,A;B,b,C;C,b,D")
-    print(machine.to_string())
-    print(machine.starting_state.state_identifier)
     det_mach = MachineFactory.machine_determination(machine)
+    for item in det_mach.states:
+        print(item.state_identifier)
     print(det_mach.to_string())
 
 
