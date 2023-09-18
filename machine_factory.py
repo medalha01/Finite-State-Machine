@@ -93,6 +93,12 @@ class MachineFactory:
             secondary_state_identifier = new_machine.states_to_identifier(
                 transition_and_state[2]
             )
+            if (
+                (primary_state_identifier == "")
+                or (secondary_state_identifier == "")
+                or (symbol == None)
+            ):
+                continue
             new_machine.create_state(primary_state_identifier)
             new_machine.create_state(secondary_state_identifier)
 
