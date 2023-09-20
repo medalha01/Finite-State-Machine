@@ -18,6 +18,7 @@ class Machine:
         self.start_dead_state()
         self.number_of_states = 0
         self.alphabet = ""
+        self.epsilon = dict()
 
     def get_state(self, state_identifier):
         """
@@ -169,6 +170,7 @@ class Machine:
             if new_state not in transition:
                 transition.append(new_state)
         self.current_states = transition
+        return transition
 
     def check_transition_multiples(self, state_identifier, symbol):
         """
@@ -353,3 +355,19 @@ class Machine:
         for state in self.end_states:
             end_states_identifier.append(state.state_identifier)
         return end_states_identifier
+
+    def build_epsilon(self):
+        for state in self.states:
+            epsilon_transition = [state]
+            auxiliar_state = state
+            while True:
+                state_epsilon = auxiliar_state.get_transition("&")
+                if state_epsilon is None:
+                    break
+                else:
+                    auxiliar_state = self.get_state(state_epsilon)
+                    epsilon_transition.append(auxiliar_state)
+            self.epsilon[state.state_identifier] = epsilon_transition
+
+    def get_epsilon_fecho(self, state_identifier: str) -> list:
+        return self.epsilon.get(state_identifier)

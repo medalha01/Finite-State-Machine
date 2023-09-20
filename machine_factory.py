@@ -52,6 +52,8 @@ class MachineFactory:
                 transition_elements[2],
             )
 
+        machine.build_epsilon()
+
         return machine
 
     @staticmethod
