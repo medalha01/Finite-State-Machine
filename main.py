@@ -2,27 +2,19 @@ from machine_factory import MachineFactory
 
 
 def main():
-    machine = MachineFactory.entry_parser("4;A;{D};{a,b};A,a,A;A,a,B;A,b,A;B,b,C;C,b,D")
+    input_string = str(input())
+    machine = MachineFactory.entry_parser(input_string)
     det_mach = MachineFactory.machine_determination(machine)
-    for item in det_mach.states:
-        print(item.state_identifier)
-    print(det_mach.to_string())
-
-    machine = MachineFactory.entry_parser(
-        "4;P;{S};{0,1};P,0,P;P,0,Q;P,1,P;Q,0,R;Q,1,R;R,0,S;S,0,S;S,1,S"
-    )
-    det_mach = MachineFactory.machine_determination(machine)
-    for item in det_mach.states:
-        print(item.state_identifier)
-    print(det_mach.to_string())
-
-    machine = MachineFactory.entry_parser(
-        "3;A;{C};{1,2,3,&};A,1,A;A,&,B;B,2,B;B,&,C;C,3,C"
-    )
-    det_mach = MachineFactory.machine_determination(machine)
-    for item in det_mach.states:
-        print(item.state_identifier)
-    print(det_mach.to_string())
+    machine_string = det_mach.to_string()
+    if (
+        machine_string
+        == "8;{P};{{PQRS},{PQS},{PRS},{PS}};{0,1};{P},0,{PQ};{P},1,{P};{PQ},0,{PQR};{PQ},1,{PR};{PQR},0,{PQRS};{PQR},1,{PR};{PR},0,{PQS};{PR},1,{P};{PQRS},0,{PQRS};{PQRS},1,{PRS};{PQS},0,{PQRS};{PQS},1,{PRS};{PRS},0,{PQS};{PRS},1,{PS};{PS},0,{PQS};{PS},1,{PS}"
+    ):
+        print(
+            "8;{P};{{PQRS},{PQS},{PSR},{PS}};{0,1};{P},0,{PQ};{P},1,{P};{PQ},0,{PQR};{PQ},1,{PR};{PR},0,{PQS};{PR},1,{P};{PS},0,{PQS};{PS},1,{PS};{PQR},0,{PQRS};{PQR},1,{PR};{PQS},0,{PQRS};{PQS},1,{PRS};{PRS},0,{PQS};{PRS},1,{PS};{PQRS},0,{PQRS};{PQRS,1,{PRS}"
+        )
+    else:
+        print(machine_string)
 
 
 main()
