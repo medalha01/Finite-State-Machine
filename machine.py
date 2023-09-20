@@ -285,9 +285,10 @@ class Machine:
                     continue
                 else:
                     for item in var:
-                        new_state = self.get_state(item)
-                        if new_state not in transition:
-                            transition.append(new_state)
+                        list_of_states_epsilon = self.get_epsilon_fecho(item)
+                        for states_item in list_of_states_epsilon:
+                            if states_item not in transition:
+                                transition.append(states_item)
 
         return transition
 
