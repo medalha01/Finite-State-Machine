@@ -53,6 +53,10 @@ class MachineFactory:
             )
 
         machine.build_epsilon()
+        new_start = machine.get_epsilon_fecho(machine.starting_state.state_identifier)
+        init_identifier = machine.states_to_identifier(new_start)
+        machine.create_state(init_identifier)
+        machine.set_starting_state(init_identifier)
 
         return machine
 
@@ -74,8 +78,7 @@ class MachineFactory:
         machine.start_machine()
         new_machine.create_state(machine.starting_state.state_identifier)
         new_machine.set_starting_state(machine.starting_state.state_identifier)
-        ##TODO check for epsilon and make epsilon* transitions automatic when the symbol is referenced
-        ## or create a new machine where the new states are epsilon* transitions
+
         alphabet = machine.get_alphabet()
 
         for symbol in alphabet:
@@ -136,6 +139,6 @@ class MachineFactory:
             )
 
         new_machine.set_number_of_states(len(new_machine.states) - 1)
-        new_machine.alphabet = machine.get_alphabet()
+        new_machine.alphabet = alphabet
 
         return new_machine

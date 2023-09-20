@@ -108,6 +108,9 @@ class Machine:
         state.set_starting()
         self.starting_state = state
 
+    def set_group_as_starting(self, list_of_states):
+        self.starting_state = list_of_states
+
     def add_end_state(self, state_identifier):
         """
         Adds an end state to the state machine.
@@ -219,7 +222,7 @@ class Machine:
         parts.append(end_states_str)
 
         # Add the alphabet as the fourth parameter
-        parts.append("{" + self.alphabet + "}")
+        parts.append("{" + self.alphabet.replace(",&", "") + "}")
 
         # Add the transitions as subsequent parameters
         for state in self.states:
@@ -280,15 +283,17 @@ class Machine:
         transition = []
         for state in self.current_states:
             if state is not None:
-                var = state.get_multiples_transitions(symbol)
-                if var is None:
-                    continue
-                else:
-                    for item in var:
-                        list_of_states_epsilon = self.get_epsilon_fecho(item)
-                        for states_item in list_of_states_epsilon:
-                            if states_item not in transition:
-                                transition.append(states_item)
+                for letter in state.state_identifier:
+                    temp = self.get_state(letter)
+                    var = temp.get_multiples_transitions(symbol)
+                    if var is None:
+                        continue
+                    else:
+                        for item in var:
+                            list_of_states_epsilon = self.get_epsilon_fecho(item)
+                            for states_item in list_of_states_epsilon:
+                                if states_item not in transition:
+                                    transition.append(states_item)
 
         return transition
 

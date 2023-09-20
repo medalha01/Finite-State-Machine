@@ -16,5 +16,13 @@ def main():
         print(item.state_identifier)
     print(det_mach.to_string())
 
+    machine = MachineFactory.entry_parser(
+        "3;A;{C};{1,2,3,&};A,1,A;A,&,B;B,2,B;B,&,C;C,3,C"
+    )
+    det_mach = MachineFactory.machine_determination(machine)
+    for item in det_mach.states:
+        print(item.state_identifier)
+    print(det_mach.to_string())
+
 
 main()
