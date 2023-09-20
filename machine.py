@@ -227,16 +227,15 @@ class Machine:
         # Add the transitions as subsequent parameters
         for state in self.states:
             elements = state.get_transitions()
-
             for transition in elements:
-                transition_string = "{},{},{}".format(
+                if transition[0] == "&":
+                    continue
+                transition_string = "{{{}}},{},{{{}}}".format(
                     state.state_identifier,
                     transition[0],  # Input symbol for the transition
                     transition[1],  # Next state for the transition
-                    # Action for the transition
                 )
                 parts.append(transition_string)
-
         # Combine all parts into a single string with semicolons
         return ";".join(parts)
 
