@@ -284,6 +284,8 @@ class Machine:
             if state is not None:
                 for letter in state.state_identifier:
                     temp = self.get_state(letter)
+                    if temp is None:
+                        continue
                     var = temp.get_multiples_transitions(symbol)
                     if var is None:
                         continue
@@ -293,6 +295,15 @@ class Machine:
                             for states_item in list_of_states_epsilon:
                                 if states_item not in transition:
                                     transition.append(states_item)
+                var = state.get_multiples_transitions(symbol)
+                if var is None:
+                    continue
+                else:
+                    for item in var:
+                        list_of_states_epsilon = self.get_epsilon_fecho(item)
+                        for states_item in list_of_states_epsilon:
+                            if states_item not in transition:
+                                transition.append(states_item)
 
         return transition
 
