@@ -224,8 +224,10 @@ class Machine:
         # Add the alphabet as the fourth parameter
         parts.append("{" + self.alphabet.replace(",&", "") + "}")
 
+        sorted_list = sorted(self.states, key=lambda state: state.state_identifier)
+
         # Add the transitions as subsequent parameters
-        for state in self.states:
+        for state in sorted_list:
             elements = state.get_transitions()
             for transition in elements:
                 if transition[0] == "&":
@@ -281,29 +283,33 @@ class Machine:
         """
         transition = []
         for state in self.current_states:
-            if state is not None:
-                for letter in state.state_identifier:
-                    temp = self.get_state(letter)
-                    if temp is None:
-                        continue
-                    var = temp.get_multiples_transitions(symbol)
-                    if var is None:
-                        continue
-                    else:
-                        for item in var:
-                            list_of_states_epsilon = self.get_epsilon_fecho(item)
-                            for states_item in list_of_states_epsilon:
-                                if states_item not in transition:
-                                    transition.append(states_item)
-                var = state.get_multiples_transitions(symbol)
+            if state is None:
+                continue
+
+            for letter in state.state_identifier:
+                temp = self.get_state(letter)
+                if temp is None:
+                    continue
+
+                var = temp.get_multiples_transitions(symbol)
                 if var is None:
                     continue
-                else:
-                    for item in var:
-                        list_of_states_epsilon = self.get_epsilon_fecho(item)
-                        for states_item in list_of_states_epsilon:
-                            if states_item not in transition:
-                                transition.append(states_item)
+
+                for item in var:
+                    list_of_states_epsilon = self.get_epsilon_fecho(item)
+                    for states_item in list_of_states_epsilon:
+                        if states_item not in transition:
+                            transition.append(states_item)
+
+            var = state.get_multiples_transitions(symbol)
+            if var is None:
+                continue
+
+            for item in var:
+                list_of_states_epsilon = self.get_epsilon_fecho(item)
+                for states_item in list_of_states_epsilon:
+                    if states_item not in transition:
+                        transition.append(states_item)
 
         return transition
 
