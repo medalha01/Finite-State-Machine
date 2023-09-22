@@ -2,6 +2,20 @@ class MinimizationAlgorithm:
     def __init__(self, machine):
         self.machine = machine
         self.minimization_group = []
+        self.dead_group = MinimizationGroup(None, "dead", [])
+        self.non_final_states = MinimizationGroup("non_final", "non_final", [])
+        self.final_states = MinimizationGroup("final", "final", [])
+        self.__init_groups()
+
+    def __init_groups(self):
+        for state in self.machine.states:
+            if state.is_final:
+                self.final_states.append(state)
+            else:
+                self.non_final_states.append(state)
+        self.minimization_group.append(self.final_states)
+        self.minimization_group.append(self.non_final_states)
+        self.minimization_group.append(self.dead_group)
 
 
 class MinimizationGroup:
