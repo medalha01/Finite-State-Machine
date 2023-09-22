@@ -1,5 +1,8 @@
+from machine import Machine
+
+
 class MinimizationAlgorithm:
-    def __init__(self, machine):
+    def __init__(self, machine: Machine):
         self.machine = machine
         self.minimization_group = []
         self.dead_group = MinimizationGroup(None, "dead", [])
@@ -16,22 +19,28 @@ class MinimizationAlgorithm:
         self.minimization_group.append(self.final_states)
         self.minimization_group.append(self.non_final_states)
         self.minimization_group.append(self.dead_group)
+        self.__remove_unreachable()
 
     def __remove_unreachable(self):
-        reachable_states = self.non_final_states.get_state_list()
-        previous_states = []
-        while reachable_states != previous_states:
-            previous_states = reachable_states
-            reachable_states = []
-            for state in previous_states:
-                if state.is_starting:
-                    reachable_states.append(state)
-                else:
-                    for transition in state.get_transitions():
-                        temporary_state = self.machine.get_state(transition[1])
-                        if temporary_state not in reachable_states:
-                            reachable_states.append(temporary_state)
-        self.non_final_states.set_state_list(reachable_states)
+        reacheable_states = [self.machine.starting_state]
+        machine_alphabet = self.machine.get_alphabet()
+        for state in reacheable_states:
+            self.machine.set_current_state(state)
+            for symbol in machine_alphabet:
+                list_of_states = self.machine.execute_machine_step(symbol)
+                for identifier in list_of_states:
+                    temporary_state = self.machine.get_state(identifier)
+                    if temporary_state not in reacheable_states:
+                        reacheable_states.append(temporary_state)
+        self.__remove_states(reacheable_states)
+
+    def __remove_states(self, state_list):
+        for state in self.non_final_states.get_state_list():
+            if state not in state_list:
+                self.non_final_states.remove(state)
+        for state in self.final_states.get_state_list():
+            if state not in state_list:
+                self.final_states.remove(state)
 
 
 class MinimizationGroup:
