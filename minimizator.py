@@ -17,6 +17,22 @@ class MinimizationAlgorithm:
         self.minimization_group.append(self.non_final_states)
         self.minimization_group.append(self.dead_group)
 
+    def __remove_unreachable(self):
+        reachable_states = self.non_final_states.get_state_list()
+        previous_states = []
+        while reachable_states != previous_states:
+            previous_states = reachable_states
+            reachable_states = []
+            for state in previous_states:
+                if state.is_starting:
+                    reachable_states.append(state)
+                else:
+                    for transition in state.get_transitions():
+                        temporary_state = self.machine.get_state(transition[1])
+                        if temporary_state not in reachable_states:
+                            reachable_states.append(temporary_state)
+        self.non_final_states.set_state_list(reachable_states)
+
 
 class MinimizationGroup:
     def __init__(self, target_group, group_id, state_list):
@@ -38,6 +54,9 @@ class MinimizationGroup:
 
     def get_group_id(self):
         return self.group_id
+
+    def set_state_list(self, state_list):
+        self.state_list = state_list
 
     def remove(self, state_id):
         for state in self.state_list:

@@ -25,7 +25,7 @@ class State:
         return None
 
     def get_multiples_transitions(self, symbol):
-        transitions = list()
+        transitions = []
         for transition in self.transitions:
             if transition[0] == symbol:
                 transitions.append(transition[1])
