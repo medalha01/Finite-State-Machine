@@ -9,6 +9,7 @@ class MinimizationAlgorithm:
         self.non_final_states = MinimizationGroup("non_final", "non_final", [])
         self.final_states = MinimizationGroup("final", "final", [])
         self.__init_groups()
+        self.__remove_unreachable()
 
     def __init_groups(self):
         for state in self.machine.states:
@@ -19,7 +20,6 @@ class MinimizationAlgorithm:
         self.minimization_group.append(self.final_states)
         self.minimization_group.append(self.non_final_states)
         self.minimization_group.append(self.dead_group)
-        self.__remove_unreachable()
 
     def __remove_unreachable(self):
         reacheable_states = [self.machine.starting_state]
