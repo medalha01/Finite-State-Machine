@@ -125,10 +125,26 @@ class MinimizationAlgorithm:
         print("Machine Size:", len(self.minimization_group) - 1)
         print("Machine Alphabet:", self.machine.get_alphabet())
         end_states = []
+        valid_states = []
         for group in self.minimization_group:
             if group.state_list[0].final is True:
                 end_states.append(group.state_list[0].state_identifier)
         print("End States:", end_states)
+        for group in self.minimization_group:
+            valid_states.append(group.state_list[0])
+        transitions = []
+        for state in self.machine.states:
+            for trans in state.transitions:
+                tempo_group = self.get_group_by_id(self.get_new_target(state))
+                new_transition_target = self.get_group_by_id(
+                    self.get_new_target(self.machine.get_state(trans[1]))
+                )
+                if new_transition_target.state_list[0] in valid_states:
+                    transitions.append(
+                        [tempo_group.state_list[0].state_identifier, trans]
+                    )
+        for transi in transitions:
+            print("Transitions:", transi[0], transi[1][0], transi[1][1])
 
     def __minimize(self):
         aux_minimization_group = []
