@@ -11,6 +11,8 @@ class MinimizationAlgorithm:
         self.final_states = MinimizationGroup("final", "final", [])
         self.__init_groups()
         self.__remove_unreachable()
+        dead_states = self.__identify_dead()
+        self.__remove_states(dead_states)
         self.__minimize()
         self.__destroy_empty_groups()
         self.print_groups()
@@ -92,6 +94,29 @@ class MinimizationAlgorithm:
             for state in group.state_list:
                 print("States ID:", state.state_identifier)
 
+    def __identify_dead(self):
+        dead_state = []
+        temp_len = 10
+        for state in self.non_final_states.state_list:
+            state_transition = [state]
+            is_dead = True
+            while len(state_transition) != temp_len:
+                for state in state_transition:
+                    temp_len = len(state_transition)
+                    for symbol in self.machine.get_alphabet().split(","):
+                        self.machine.set_current_state(state)
+                        list_of_states = self.machine.execute_machine_step(symbol)
+                        temp_state = list_of_states[0]
+                        if temp_state not in state_transition:
+                            state_transition.append(temp_state)
+            for transtion_state in state_transition:
+                if transtion_state.final is True:
+                    is_dead = False
+            if is_dead is True:
+                dead_state.append(state)
+                print("State Dead:", state.state_identifier)
+        return dead_state
+
     def __minimize(self):
         aux_minimization_group = []
         counter = 0
@@ -101,6 +126,8 @@ class MinimizationAlgorithm:
                 print("Executing Symbol =>", symbol)
                 for group in self.minimization_group:
                     if len(group.state_list) == 0 or group.state_list is None:
+                        continue
+                    elif len(group.state_list) == 1:
                         continue
                     print("Group =>", group.group_id)
                     new_groups = []
@@ -137,7 +164,6 @@ class MinimizationAlgorithm:
                     if counter > 900:
                         print("ITS JOEVER")
                         break
-                self.__destroy_empty_groups()
 
 
 class MinimizationGroup:
