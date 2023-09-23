@@ -42,6 +42,7 @@ class MinimizationAlgorithm:
                 for temp_state in list_of_states:
                     ##temporary_state = self.machine.get_state(identifier)
                     if temp_state not in reacheable_states:
+                        print("Estado Alcansado:", temp_state.state_identifier)
                         reacheable_states.append(temp_state)
             counter += 1
         temporary_state = self.machine.get_state("dead")
@@ -52,9 +53,11 @@ class MinimizationAlgorithm:
     def __remove_states(self, state_list):
         for state in self.non_final_states.get_state_list():
             if state not in state_list:
+                print("Removido:", state.state_identifier)
                 self.non_final_states.remove(state)
         for state in self.final_states.get_state_list():
             if state not in state_list:
+                print("Removido Final:", state.state_identifier)
                 self.final_states.remove(state)
 
     def get_group_by_id(self, group_id):
