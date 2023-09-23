@@ -63,6 +63,8 @@ class MinimizationAlgorithm:
 
     def __destroy_empty_groups(self):
         for group in self.minimization_group:
+            print("GROUPID:", group.group_id)
+            print(len(group.state_list))
             if len(group.state_list) == 0:
                 self.minimization_group.remove(group)
 
@@ -91,44 +93,47 @@ class MinimizationAlgorithm:
                 print("States ID:", state.state_identifier)
 
     def __minimize(self):
-        new_minimization_group = []
+        aux_minimization_group = []
         counter = 0
-        for symbol in self.machine.get_alphabet().split(","):
-            print("Executing Symbol =>", symbol)
-            for group in self.minimization_group:
-                print("Group =>", group.group_id)
-                new_groups = []
-                for state in group.state_list:
-                    print("State =>", state.state_identifier)
-                    group_not_found = True
-                    self.machine.set_current_state(state)
-                    target_state_list = self.machine.execute_machine_step(symbol)
-                    if len(target_state_list) == 0 or target_state_list is None:
-                        target_state = self.machine.get_state("dead")
-                    else:
-                        target_state = target_state_list[0]
-                    print("Target State =>", target_state.state_identifier)
-                    object_target_group = self.get_group_by_id(group.target_group)
-                    print("Original Target Group =>", object_target_group.group_id)
-                    if target_state not in object_target_group.state_list:
-                        group.remove(state.state_identifier)
-                        target_id = self.get_new_target(target_state)
-                        print("New Target Group =>", target_id)
-                        for new_group in new_groups:
-                            if new_group.target_group == target_id:
-                                new_group.append(state)
-                                group_not_found = False
-                                break
-                        if group_not_found:
-                            new_group = MinimizationGroup(target_id, counter, [state])
-                            new_groups.append(new_group)
-                            counter += 1
-                for group_new in new_groups:
-                    self.minimization_group.append(group_new)
-                if counter > 30:
-                    print("ITS JOEVER")
-                    break
-        new_minimization_group = self.minimization_group
+        while len(aux_minimization_group) != len(self.minimization_group):
+            aux_minimization_group = self.minimization_group.copy()
+            for symbol in self.machine.get_alphabet().split(","):
+                print("Executing Symbol =>", symbol)
+                for group in self.minimization_group:
+                    print("Group =>", group.group_id)
+                    new_groups = []
+                    for state in group.state_list:
+                        print("State =>", state.state_identifier)
+                        group_not_found = True
+                        self.machine.set_current_state(state)
+                        target_state_list = self.machine.execute_machine_step(symbol)
+                        if len(target_state_list) == 0 or target_state_list is None:
+                            target_state = self.machine.get_state("dead")
+                        else:
+                            target_state = target_state_list[0]
+                        print("Target State =>", target_state.state_identifier)
+                        object_target_group = self.get_group_by_id(group.target_group)
+                        print("Original Target Group =>", object_target_group.group_id)
+                        if target_state not in object_target_group.state_list:
+                            group.remove(state.state_identifier)
+                            target_id = self.get_new_target(target_state)
+                            print("New Target Group =>", target_id)
+                            for new_group in new_groups:
+                                if new_group.target_group == target_id:
+                                    new_group.append(state)
+                                    group_not_found = False
+                                    break
+                            if group_not_found:
+                                new_group = MinimizationGroup(
+                                    target_id, counter, [state]
+                                )
+                                new_groups.append(new_group)
+                                counter += 1
+                    for group_new in new_groups:
+                        self.minimization_group.append(group_new)
+                    if counter > 900:
+                        print("ITS JOEVER")
+                        break
 
 
 class MinimizationGroup:
