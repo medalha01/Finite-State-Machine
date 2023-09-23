@@ -98,21 +98,16 @@ class MinimizationAlgorithm:
                         target_state_identifier = "dead"
                     else:
                         target_state = self.machine.get_state(target_state_identifier)
-                    print(group.group_id)
-                    print(state.state_identifier)
-                    print(group.target_group)
                     object_target_group = self.get_group_by_id(group.target_group)
                     if target_state not in object_target_group.state_list:
                         group.remove(state.state_identifier)
                         target_id = self.get_new_target(target_state)
                         for new_group in new_groups:
                             if new_group.target_group == target_id:
-                                print(state.state_identifier)
                                 new_group.append(state)
                                 group_not_found = False
                                 break
                         if group_not_found:
-                            print(state.state_identifier)
                             new_group = MinimizationGroup(target_id, counter, [state])
                             new_groups.append(new_group)
                             counter += 1
