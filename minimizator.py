@@ -36,13 +36,12 @@ class MinimizationAlgorithm:
             self.machine.set_current_state(state)
             if state is None:
                 continue
-            print(state.state_identifier)
             for symbol in machine_alphabet.split(","):
                 list_of_states = self.machine.execute_machine_step(symbol)
                 for temp_state in list_of_states:
                     ##temporary_state = self.machine.get_state(identifier)
                     if temp_state not in reacheable_states:
-                        print("Estado Alcansado:", temp_state.state_identifier)
+                        print("Estado Alcançado:", temp_state.state_identifier)
                         reacheable_states.append(temp_state)
             counter += 1
         temporary_state = self.machine.get_state("dead")

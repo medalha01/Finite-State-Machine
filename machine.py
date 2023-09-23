@@ -123,8 +123,6 @@ class Machine:
         """
         state = self.get_state(state_identifier)
         state.set_final()
-        print(state.state_identifier)
-        print(state.final)
         if state not in self.end_states:
             self.end_states.append(state)
 
