@@ -88,9 +88,12 @@ class MinimizationAlgorithm:
         new_minimization_group = []
         counter = 0
         for symbol in self.machine.get_alphabet().split(","):
+            print("Executing Symbol =>", symbol)
             for group in self.minimization_group:
+                print("Group =>", group.group_id)
                 new_groups = []
                 for state in group.state_list:
+                    print("State =>", state.state_identifier)
                     group_not_found = True
                     self.machine.set_current_state(state)
                     target_state_identifier = self.machine.execute_machine_step(symbol)
