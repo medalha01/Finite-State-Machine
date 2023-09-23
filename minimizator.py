@@ -100,6 +100,7 @@ class MinimizationAlgorithm:
                         target_state_identifier = "dead"
                     else:
                         target_state = self.machine.get_state(target_state_identifier)
+                    print("Target State =>", target_state.state_identifier)
                     object_target_group = self.get_group_by_id(group.target_group)
                     if target_state not in object_target_group.state_list:
                         group.remove(state.state_identifier)
