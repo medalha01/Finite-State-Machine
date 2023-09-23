@@ -106,8 +106,8 @@ class MinimizationAlgorithm:
                     print("Original Target Group =>", object_target_group.group_id)
                     if target_state not in object_target_group.state_list:
                         group.remove(state.state_identifier)
-                        print("Target Group =>", object_target_group.group_id)
                         target_id = self.get_new_target(target_state)
+                        print("New Target Group =>", target_id)
                         for new_group in new_groups:
                             if new_group.target_group == target_id:
                                 new_group.append(state)
@@ -120,6 +120,7 @@ class MinimizationAlgorithm:
                 for group_new in new_groups:
                     self.minimization_group.append(group_new)
                 if counter > 30:
+                    print("ITS JOEVER")
                     break
 
 
