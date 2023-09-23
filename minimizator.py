@@ -22,6 +22,7 @@ class MinimizationAlgorithm:
             else:
                 print("non_final:", state.state_identifier)
                 self.non_final_states.append(state)
+        self.non_final_states.remove("dead")
         self.minimization_group.append(self.final_states)
         self.minimization_group.append(self.non_final_states)
         self.dead_group.append(self.machine.get_state("dead"))
@@ -95,9 +96,11 @@ class MinimizationAlgorithm:
                     print("State =>", state.state_identifier)
                     group_not_found = True
                     self.machine.set_current_state(state)
-                    target_state = self.machine.execute_machine_step(symbol)[0]
-                    if target_state is None:
+                    target_state_list = self.machine.execute_machine_step(symbol)
+                    if len(target_state_list) == 0 or target_state_list is None:
                         target_state = self.machine.get_state("dead")
+                    else:
+                        target_state = target_state_list[0]
                     print("Target State =>", target_state.state_identifier)
                     object_target_group = self.get_group_by_id(group.target_group)
                     if target_state not in object_target_group.state_list:
