@@ -1,4 +1,5 @@
 from machine_factory import MachineFactory
+from minimizator import MinimizationAlgorithm, MinimizationGroup
 
 
 def main():
@@ -9,4 +10,11 @@ def main():
     print(machine_string)
 
 
-main()
+def main_mimize():
+    input_string = str(input())
+    machine = MachineFactory.entry_parser(input_string)
+    Minimization = MinimizationAlgorithm(machine)
+
+
+##main()
+main_mimize()

@@ -1,4 +1,5 @@
 from machine import Machine
+from states import State
 
 
 class MinimizationAlgorithm:
@@ -10,6 +11,8 @@ class MinimizationAlgorithm:
         self.final_states = MinimizationGroup("final", "final", [])
         self.__init_groups()
         self.__remove_unreachable()
+        self.__minimize()
+        self.print_groups()
 
     def __init_groups(self):
         for state in self.machine.states:
@@ -19,6 +22,7 @@ class MinimizationAlgorithm:
                 self.non_final_states.append(state)
         self.minimization_group.append(self.final_states)
         self.minimization_group.append(self.non_final_states)
+        self.dead_group.append(self.machine.get_state("dead"))
         self.minimization_group.append(self.dead_group)
 
     def __remove_unreachable(self):
@@ -32,6 +36,9 @@ class MinimizationAlgorithm:
                     temporary_state = self.machine.get_state(identifier)
                     if temporary_state not in reacheable_states:
                         reacheable_states.append(temporary_state)
+        temporary_state = self.machine.get_state("dead")
+        if temporary_state not in reacheable_states:
+            reacheable_states.append(temporary_state)
         self.__remove_states(reacheable_states)
 
     def __remove_states(self, state_list):
@@ -41,6 +48,59 @@ class MinimizationAlgorithm:
         for state in self.final_states.get_state_list():
             if state not in state_list:
                 self.final_states.remove(state)
+
+    def get_group_by_id(self, group_id):
+        for group in self.minimization_group:
+            if group.get_group_id() == group_id:
+                return group
+
+    def get_new_target(self, state):
+        for group in self.minimization_group:
+            if state in group.state_list:
+                return group.get_group_id()
+
+    def get_group_by_target(self, target):
+        for group in self.minimization_group:
+            if target == group.target_group:
+                return target
+            else:
+                return None
+
+    def print_groups(self):
+        for group in self.minimization_group:
+            print(group.group_id)
+            for state in group.state_list:
+                print(state.state_identifier)
+
+    def __minimize(self):
+        new_minimization_group = []
+        counter = 0
+        for symbol in self.machine.get_alphabet().split(","):
+            for group in self.minimization_group:
+                new_groups = []
+                for state in group.state_list:
+                    group_not_found = True
+                    self.machine.set_current_state(state)
+                    target_state_identifier = self.machine.execute_machine_step(symbol)
+                    if target_state_identifier is None:
+                        target_state_identifier = "dead"
+                    else:
+                        target_state = self.machine.get_state(target_state_identifier)
+                    object_target_group = self.get_group_by_id(group.target_group)
+                    if target_state not in object_target_group.state_list:
+                        group.remove(state.state_identifier)
+                        target_id = self.get_new_target(target_state)
+                        for new_group in new_groups:
+                            if new_group.target_group == target_id:
+                                new_group.append(state)
+                                group_not_found = False
+                                break
+                        if group_not_found:
+                            new_group = MinimizationGroup(target_id, counter, [state])
+                            new_groups.append(new_group)
+                            counter += 1
+                for group_new in new_groups:
+                    self.minimization_group.append(group_new)
 
 
 class MinimizationGroup:
