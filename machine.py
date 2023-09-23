@@ -282,6 +282,7 @@ class Machine:
             list: A list of states that the symbol transitions to.
         """
         transition = []
+
         for state in self.current_states:
             if state is None:
                 continue
@@ -339,7 +340,10 @@ class Machine:
         Returns:
             None
         """
-        self.current_states = states
+        if states is State:
+            self.current_states = [states]
+        else:
+            self.current_states = states
 
     def get_alphabet(self):
         return self.alphabet
