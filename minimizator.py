@@ -12,6 +12,7 @@ class MinimizationAlgorithm:
         self.__init_groups()
         self.__remove_unreachable()
         self.__minimize()
+        self.__destroy_empty_groups()
         self.print_groups()
 
     def __init_groups(self):
@@ -59,6 +60,11 @@ class MinimizationAlgorithm:
             if state not in state_list:
                 print("Removido Final:", state.state_identifier)
                 self.final_states.remove(state)
+
+    def __destroy_empty_groups(self):
+        for group in self.minimization_group:
+            if len(group.state_list) == 0:
+                self.minimization_group.remove(group)
 
     def get_group_by_id(self, group_id):
         for group in self.minimization_group:
