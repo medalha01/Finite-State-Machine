@@ -340,10 +340,12 @@ class Machine:
         Returns:
             None
         """
-        if states is State:
-            self.current_states = [states]
-        else:
-            self.current_states = states
+        self.current_states = []
+        try:
+            for state in states:
+                self.current_states.append(state)
+        except TypeError:
+            self.current_states.append(states)
 
     def get_alphabet(self):
         return self.alphabet

@@ -30,6 +30,7 @@ class MinimizationAlgorithm:
         machine_alphabet = self.machine.get_alphabet()
         for state in reacheable_states:
             self.machine.set_current_state(state)
+            print(state.state_identifier)
             for symbol in machine_alphabet:
                 list_of_states = self.machine.execute_machine_step(symbol)
                 for identifier in list_of_states:
