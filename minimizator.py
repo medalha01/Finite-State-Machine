@@ -100,6 +100,8 @@ class MinimizationAlgorithm:
             for symbol in self.machine.get_alphabet().split(","):
                 print("Executing Symbol =>", symbol)
                 for group in self.minimization_group:
+                    if len(group.state_list) == 0 or group.state_list is None:
+                        continue
                     print("Group =>", group.group_id)
                     new_groups = []
                     for state in group.state_list:
@@ -129,11 +131,13 @@ class MinimizationAlgorithm:
                                 )
                                 new_groups.append(new_group)
                                 counter += 1
+
                     for group_new in new_groups:
                         self.minimization_group.append(group_new)
                     if counter > 900:
                         print("ITS JOEVER")
                         break
+                self.__destroy_empty_groups()
 
 
 class MinimizationGroup:
