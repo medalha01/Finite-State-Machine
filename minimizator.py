@@ -11,11 +11,11 @@ class MinimizationAlgorithm:
         self.final_states = MinimizationGroup("final", "final", [])
         self.__init_groups()
         self.__remove_unreachable()
-        dead_states = self.__identify_dead()
-        self.__remove_states(dead_states)
+        self.__identify_dead()
         self.__minimize()
         self.__destroy_empty_groups()
         self.print_groups()
+        self.toMachine()
 
     def __init_groups(self):
         for state in self.machine.states:
@@ -51,6 +51,7 @@ class MinimizationAlgorithm:
         temporary_state = self.machine.get_state("dead")
         if temporary_state not in reacheable_states:
             reacheable_states.append(temporary_state)
+        print(len(reacheable_states))
         self.__remove_states(reacheable_states)
 
     def __remove_states(self, state_list):
@@ -115,7 +116,19 @@ class MinimizationAlgorithm:
             if is_dead is True:
                 dead_state.append(state)
                 print("State Dead:", state.state_identifier)
-        return dead_state
+        for state in dead_state:
+            self.non_final_states.remove(state.state_identifier)
+            self.machine.remove_state(state.state_identifier)
+            print("State Removed:", state.state_identifier)
+
+    def toMachine(self):
+        print("Machine Size:", len(self.minimization_group) - 1)
+        print("Machine Alphabet:", self.machine.get_alphabet())
+        end_states = []
+        for group in self.minimization_group:
+            if group.state_list[0].final is True:
+                end_states.append(group.state_list[0].state_identifier)
+        print("End States:", end_states)
 
     def __minimize(self):
         aux_minimization_group = []
@@ -125,9 +138,7 @@ class MinimizationAlgorithm:
             for symbol in self.machine.get_alphabet().split(","):
                 print("Executing Symbol =>", symbol)
                 for group in self.minimization_group:
-                    if len(group.state_list) == 0 or group.state_list is None:
-                        continue
-                    elif len(group.state_list) == 1:
+                    if len(group.state_list) <= 1 or group.state_list is None:
                         continue
                     print("Group =>", group.group_id)
                     new_groups = []
