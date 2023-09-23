@@ -140,11 +140,15 @@ class MinimizationAlgorithm:
                     self.get_new_target(self.machine.get_state(trans[1]))
                 )
                 if new_transition_target.state_list[0] in valid_states:
-                    transitions.append(
-                        [tempo_group.state_list[0].state_identifier, trans]
-                    )
+                    new_trans = [
+                        tempo_group.state_list[0].state_identifier,
+                        trans[0],
+                        new_transition_target.state_list[0].state_identifier,
+                    ]
+                    if new_trans not in transitions:
+                        transitions.append(new_trans)
         for transi in transitions:
-            print("Transitions:", transi[0], transi[1][0], transi[1][1])
+            print("Transitions:", transi[0], transi[1], transi[2])
 
     def __minimize(self):
         aux_minimization_group = []
