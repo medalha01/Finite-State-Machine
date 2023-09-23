@@ -80,9 +80,9 @@ class MinimizationAlgorithm:
 
     def print_groups(self):
         for group in self.minimization_group:
-            print(group.group_id)
+            print("Group ID:", group.group_id)
             for state in group.state_list:
-                print(state.state_identifier)
+                print("States ID:", state.state_identifier)
 
     def __minimize(self):
         new_minimization_group = []
@@ -122,6 +122,7 @@ class MinimizationAlgorithm:
                 if counter > 30:
                     print("ITS JOEVER")
                     break
+        new_minimization_group = self.minimization_group
 
 
 class MinimizationGroup:
