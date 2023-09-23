@@ -38,6 +38,7 @@ class MachineFactory:
         end_states = parameters[2].split(",")
 
         for state in end_states:
+            print(state)
             machine.create_state(state)
             machine.add_end_state(state)
 

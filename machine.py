@@ -122,8 +122,10 @@ class Machine:
             None
         """
         state = self.get_state(state_identifier)
+        state.set_final()
+        print(state.state_identifier)
+        print(state.final)
         if state not in self.end_states:
-            state.set_final()
             self.end_states.append(state)
 
     def remove_state(self, state_identifier):

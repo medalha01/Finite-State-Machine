@@ -16,9 +16,11 @@ class MinimizationAlgorithm:
 
     def __init_groups(self):
         for state in self.machine.states:
-            if state.is_final:
+            if state.final is True:
+                print("final:", state.state_identifier)
                 self.final_states.append(state)
             else:
+                print("non_final:", state.state_identifier)
                 self.non_final_states.append(state)
         self.minimization_group.append(self.final_states)
         self.minimization_group.append(self.non_final_states)
@@ -57,13 +59,14 @@ class MinimizationAlgorithm:
 
     def get_group_by_id(self, group_id):
         for group in self.minimization_group:
-            if group.get_group_id() == group_id:
+            if group.group_id == group_id:
                 return group
 
     def get_new_target(self, state):
         for group in self.minimization_group:
             if state in group.state_list:
                 return group.get_group_id()
+        return "dead"
 
     def get_group_by_target(self, target):
         for group in self.minimization_group:
@@ -93,6 +96,7 @@ class MinimizationAlgorithm:
                     else:
                         target_state = self.machine.get_state(target_state_identifier)
                     print(group.group_id)
+                    print(state.state_identifier)
                     print(group.target_group)
                     object_target_group = self.get_group_by_id(group.target_group)
                     if target_state not in object_target_group.state_list:
@@ -105,12 +109,14 @@ class MinimizationAlgorithm:
                                 group_not_found = False
                                 break
                         if group_not_found:
-                            print("state.state_identifier")
+                            print(state.state_identifier)
                             new_group = MinimizationGroup(target_id, counter, [state])
                             new_groups.append(new_group)
                             counter += 1
                 for group_new in new_groups:
                     self.minimization_group.append(group_new)
+                if counter > 30:
+                    break
 
 
 class MinimizationGroup:
