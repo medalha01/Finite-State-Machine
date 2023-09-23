@@ -103,8 +103,10 @@ class MinimizationAlgorithm:
                         target_state = target_state_list[0]
                     print("Target State =>", target_state.state_identifier)
                     object_target_group = self.get_group_by_id(group.target_group)
+                    print("Original Target Group =>", object_target_group.group_id)
                     if target_state not in object_target_group.state_list:
                         group.remove(state.state_identifier)
+                        print("Target Group =>", object_target_group.group_id)
                         target_id = self.get_new_target(target_state)
                         for new_group in new_groups:
                             if new_group.target_group == target_id:
