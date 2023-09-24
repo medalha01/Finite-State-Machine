@@ -122,16 +122,23 @@ class MinimizationAlgorithm:
             print("State Removed:", state.state_identifier)
 
     def toMachine(self):
+        machine = Machine()
         print("Machine Size:", len(self.minimization_group) - 1)
-        print("Machine Alphabet:", self.machine.get_alphabet())
+        machine.set_number_of_states(len(self.minimization_group) - 1)
+
+        machine.create_state(self.machine.starting_state.state_identifier)
+        machine.set_starting_state(self.machine.starting_state.state_identifier)
         end_states = []
         valid_states = []
         for group in self.minimization_group:
             if group.state_list[0].final is True:
-                end_states.append(group.state_list[0].state_identifier)
+                machine.create_state(group.state_list[0].state_identifier)
+                machine.add_end_state(group.state_list[0].state_identifier)
         print("End States:", end_states)
         for group in self.minimization_group:
             valid_states.append(group.state_list[0])
+        print("Machine Alphabet:", self.machine.get_alphabet())
+        machine.create_alphabet(self.machine.get_alphabet())
         transitions = []
         for state in self.machine.states:
             for trans in state.transitions:
@@ -139,6 +146,9 @@ class MinimizationAlgorithm:
                 new_transition_target = self.get_group_by_id(
                     self.get_new_target(self.machine.get_state(trans[1]))
                 )
+
+                if new_transition_target.state_list[0].state_identifier == "dead":
+                    continue
                 if new_transition_target.state_list[0] in valid_states:
                     new_trans = [
                         tempo_group.state_list[0].state_identifier,
@@ -149,6 +159,9 @@ class MinimizationAlgorithm:
                         transitions.append(new_trans)
         for transi in transitions:
             print("Transitions:", transi[0], transi[1], transi[2])
+            machine.create_state(transi[0])
+            machine.create_state(transi[2])
+            machine.add_transition(transi[0], transi[1], transi[2])
 
     def __minimize(self):
         aux_minimization_group = []
