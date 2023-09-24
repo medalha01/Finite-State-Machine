@@ -19,7 +19,7 @@ class MinimizationAlgorithm:
         for state in self.final_states.state_list:
             print("Final:" + state.state_identifier)
         self.__minimize()
-        self.__destroy_empty_groups()
+        self.destroy_empty_groups()
         ##self.print_groups()
 
     def __init_groups(self):
@@ -64,10 +64,24 @@ class MinimizationAlgorithm:
             if state not in state_list:
                 self.final_states.remove(state)
 
-    def __destroy_empty_groups(self):
+    def destroy_empty_groups(self):
         for group in self.minimization_group:
             if len(group.state_list) == 0:
+                print("Group ID:", group.group_id)
                 self.minimization_group.remove(group)
+            elif group.state_list[0] is None:
+                self.minimization_group.remove(group)
+
+    def get_size(self):
+        size = 0
+        for group in self.minimization_group:
+            if (
+                len(group.state_list) != 0
+                and group.state_list[0] is not None
+                and group.state_list[0].state_identifier != "dead"
+            ):
+                size += 1
+        return size
 
     def get_group_by_id(self, group_id):
         for group in self.minimization_group:
@@ -123,17 +137,21 @@ class MinimizationAlgorithm:
 
     def toMachine(self):
         machine = Machine()
-        machine.set_number_of_states(len(self.minimization_group) - 1)
-
+        self.destroy_empty_groups()
+        machine.set_number_of_states(self.get_size())
         machine.create_state(self.machine.starting_state.state_identifier)
         machine.set_starting_state(self.machine.starting_state.state_identifier)
         end_states = []
         valid_states = []
         for group in self.minimization_group:
+            if len(group.state_list) == 0:
+                continue
             if group.state_list[0].final is True:
                 machine.create_state(group.state_list[0].state_identifier)
                 machine.add_end_state(group.state_list[0].state_identifier)
         for group in self.minimization_group:
+            if len(group.state_list) == 0:
+                continue
             valid_states.append(group.state_list[0])
         machine.create_alphabet(self.machine.get_alphabet())
         transitions = []
@@ -184,10 +202,17 @@ class MinimizationAlgorithm:
                     new_groups = []
                     if len(group.state_list) <= 1 or group.state_list is None:
                         continue
+                    if counter > 200 and len(group.state_list) <= 5:
+                        continue
                     for state in group.state_list:
                         print("State Identifier: ", state.state_identifier)
                         group_not_found = True
                         self.machine.set_current_state(state)
+                        if (
+                            state.state_identifier in self.dead_states
+                            or state.state_identifier == "dead"
+                        ):
+                            continue
                         target_state_list = self.machine.execute_machine_step(symbol)
                         if target_state_list[0].state_identifier in self.dead_states:
                             target_state = self.machine.get_state("dead")
@@ -200,7 +225,7 @@ class MinimizationAlgorithm:
                         print("Original Group ID:", group.group_id)
                         print("Original Target", group.target_group)
                         if target_state not in object_target_group.state_list:
-                            kill_dict.append = [group, target_state.state_identifier]
+                            kill_dict.append([group.group_id, state.state_identifier])
                             target_id = self.get_new_target(target_state)
                             print("Where the state is:", target_id)
                             for old_group in new_groups:
@@ -222,12 +247,18 @@ class MinimizationAlgorithm:
                                 )
                                 new_groups.append(new_group)
                                 counter += 1
+                    if counter > 1000:
+                        print("ITS JOEVER")
+                        break
                     for group_new in new_groups:
                         symbol_groups.append(group_new)
+                for kill_order in kill_dict:
+                    group = self.get_group_by_id(kill_order[0])
+                    group.remove(kill_order[1])
+                    print("Removed State:", kill_order[1], "From:", kill_order[0])
                 for group_new in symbol_groups:
                     self.minimization_group.append(group_new)
-                for kill_order in kill_dict:
-                    kill_order[0].remove(kill_order[1])
+
                 if counter > 900:
                     ##print("ITS JOEVER")
                     break

@@ -264,7 +264,7 @@ class Machine:
 
         # Add the end states as the third parameter
         end_states_str = (
-            "{" + "},{".join(state.state_identifier for state in self.end_states) + "}"
+            "{" + ",".join(state.state_identifier for state in self.end_states) + "}"
         )
         parts.append(end_states_str)
 
@@ -287,10 +287,6 @@ class Machine:
                 parts.append(transition_string)
         # Combine all parts into a single string with semicolons
         return ";".join(parts)
-
-    # Example usage:
-    # dfa = ...  # Create your DFA object
-    # print(dfa.to_string())  # Print the string representation of the DFA
 
     def start_machine(self):
         """
