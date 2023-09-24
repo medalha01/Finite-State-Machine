@@ -15,7 +15,17 @@ class MinimizationAlgorithm:
         self.__minimize()
         self.__destroy_empty_groups()
         self.print_groups()
-        self.toMachine()
+        self.machine = self.toMachine()
+        self.minimization_group = []
+        self.dead_group = MinimizationGroup("dead", "dead", [])
+        self.non_final_states = MinimizationGroup("non_final", "non_final", [])
+        self.final_states = MinimizationGroup("final", "final", [])
+        self.__init_groups()
+        self.__remove_unreachable()
+        self.__identify_dead()
+        self.__minimize()
+        self.__destroy_empty_groups()
+        self.print_groups()
 
     def __init_groups(self):
         for state in self.machine.states:
@@ -107,6 +117,8 @@ class MinimizationAlgorithm:
                     for symbol in self.machine.get_alphabet().split(","):
                         self.machine.set_current_state(state)
                         list_of_states = self.machine.execute_machine_step(symbol)
+                        if len(list_of_states) == 0:
+                            continue
                         temp_state = list_of_states[0]
                         if temp_state not in state_transition:
                             state_transition.append(temp_state)
@@ -162,6 +174,13 @@ class MinimizationAlgorithm:
             machine.create_state(transi[0])
             machine.create_state(transi[2])
             machine.add_transition(transi[0], transi[1], transi[2])
+
+        machine.build_epsilon()
+        new_start = machine.get_epsilon_fecho(machine.starting_state.state_identifier)
+        init_identifier = machine.states_to_identifier(new_start)
+        machine.create_state(init_identifier)
+        machine.set_starting_state(init_identifier)
+        return machine
 
     def __minimize(self):
         aux_minimization_group = []
