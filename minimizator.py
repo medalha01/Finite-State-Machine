@@ -9,10 +9,15 @@ class MinimizationAlgorithm:
         self.dead_group = MinimizationGroup("dead", "dead", [])
         self.non_final_states = MinimizationGroup("non_final", "non_final", [])
         self.final_states = MinimizationGroup("final", "final", [])
+
         self.dead_states = []
         self.__init_groups()
         self.__remove_unreachable()
         self.__identify_dead()
+        for state in self.non_final_states.state_list:
+            print("NonFinal:" + state.state_identifier)
+        for state in self.final_states.state_list:
+            print("Final:" + state.state_identifier)
         self.__minimize()
         self.__destroy_empty_groups()
         ##self.print_groups()
@@ -162,12 +167,18 @@ class MinimizationAlgorithm:
         return machine
 
     def __minimize(self):
+        for group in self.minimization_group:
+            print("Group ID:", group.group_id)
+            for state in group.state_list:
+                print("State:", state.state_identifier)
+        print("-----------")
         aux_minimization_group = []
         counter = 0
         while len(aux_minimization_group) != len(self.minimization_group):
             aux_minimization_group = self.minimization_group.copy()
             for symbol in self.machine.get_alphabet().split(","):
                 symbol_groups = []
+                kill_dict = []
                 print("Transition Symbol -", symbol)
                 for group in self.minimization_group:
                     new_groups = []
@@ -186,11 +197,12 @@ class MinimizationAlgorithm:
                             target_state = target_state_list[0]
                         print("Target State:", target_state.state_identifier)
                         object_target_group = self.get_group_by_id(group.target_group)
-                        print("Original Group ID:", object_target_group.group_id)
-                        print("Original Target", object_target_group.target_group)
+                        print("Original Group ID:", group.group_id)
+                        print("Original Target", group.target_group)
                         if target_state not in object_target_group.state_list:
-                            group.remove(state.state_identifier)
+                            kill_dict.append = [group, target_state.state_identifier]
                             target_id = self.get_new_target(target_state)
+                            print("Where the state is:", target_id)
                             for old_group in new_groups:
                                 if old_group.target_group == target_id:
                                     print("Added to Old Group:", old_group.group_id)
@@ -214,6 +226,8 @@ class MinimizationAlgorithm:
                         symbol_groups.append(group_new)
                 for group_new in symbol_groups:
                     self.minimization_group.append(group_new)
+                for kill_order in kill_dict:
+                    kill_order[0].remove(kill_order[1])
                 if counter > 900:
                     ##print("ITS JOEVER")
                     break
