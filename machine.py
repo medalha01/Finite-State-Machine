@@ -175,6 +175,11 @@ class Machine:
         self.current_states = transition
         return transition
 
+    def print_states(self):
+        for state in self.states:
+            print("Oi: " + state.state_identifier)
+        print(len(self.states))
+
     def check_transition_multiples(self, state_identifier, symbol):
         """
         Check if there are multiple transitions for a given state and symbol.

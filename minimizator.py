@@ -212,7 +212,7 @@ class MinimizationAlgorithm:
                 for group_new in symbol_groups:
                     self.minimization_group.append(group_new)
                 if counter > 900:
-                    print("ITS JOEVER")
+                    ##print("ITS JOEVER")
                     break
 
 
