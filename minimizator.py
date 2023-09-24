@@ -14,7 +14,7 @@ class MinimizationAlgorithm:
         self.__identify_dead()
         self.__minimize()
         self.__destroy_empty_groups()
-        self.print_groups()
+        ##self.print_groups()
         self.machine = self.toMachine()
         self.minimization_group = []
         self.dead_group = MinimizationGroup("dead", "dead", [])
@@ -25,15 +25,13 @@ class MinimizationAlgorithm:
         self.__identify_dead()
         self.__minimize()
         self.__destroy_empty_groups()
-        self.print_groups()
+        ##self.print_groups()
 
     def __init_groups(self):
         for state in self.machine.states:
             if state.final is True:
-                print("final:", state.state_identifier)
                 self.final_states.append(state)
             else:
-                print("non_final:", state.state_identifier)
                 self.non_final_states.append(state)
         self.non_final_states.remove("dead")
         self.minimization_group.append(self.final_states)
@@ -55,29 +53,23 @@ class MinimizationAlgorithm:
                 for temp_state in list_of_states:
                     ##temporary_state = self.machine.get_state(identifier)
                     if temp_state not in reacheable_states:
-                        print("Estado Alcançado:", temp_state.state_identifier)
                         reacheable_states.append(temp_state)
             counter += 1
         temporary_state = self.machine.get_state("dead")
         if temporary_state not in reacheable_states:
             reacheable_states.append(temporary_state)
-        print(len(reacheable_states))
         self.__remove_states(reacheable_states)
 
     def __remove_states(self, state_list):
         for state in self.non_final_states.get_state_list():
             if state not in state_list:
-                print("Removido:", state.state_identifier)
                 self.non_final_states.remove(state)
         for state in self.final_states.get_state_list():
             if state not in state_list:
-                print("Removido Final:", state.state_identifier)
                 self.final_states.remove(state)
 
     def __destroy_empty_groups(self):
         for group in self.minimization_group:
-            print("GROUPID:", group.group_id)
-            print(len(group.state_list))
             if len(group.state_list) == 0:
                 self.minimization_group.remove(group)
 
@@ -103,7 +95,7 @@ class MinimizationAlgorithm:
         for group in self.minimization_group:
             print("Group ID:", group.group_id)
             for state in group.state_list:
-                print("States ID:", state.state_identifier)
+                print("State:", state.state_identifier)
 
     def __identify_dead(self):
         dead_state = []
@@ -127,15 +119,12 @@ class MinimizationAlgorithm:
                     is_dead = False
             if is_dead is True:
                 dead_state.append(state)
-                print("State Dead:", state.state_identifier)
         for state in dead_state:
             self.non_final_states.remove(state.state_identifier)
             self.machine.remove_state(state.state_identifier)
-            print("State Removed:", state.state_identifier)
 
     def toMachine(self):
         machine = Machine()
-        print("Machine Size:", len(self.minimization_group) - 1)
         machine.set_number_of_states(len(self.minimization_group) - 1)
 
         machine.create_state(self.machine.starting_state.state_identifier)
@@ -146,10 +135,8 @@ class MinimizationAlgorithm:
             if group.state_list[0].final is True:
                 machine.create_state(group.state_list[0].state_identifier)
                 machine.add_end_state(group.state_list[0].state_identifier)
-        print("End States:", end_states)
         for group in self.minimization_group:
             valid_states.append(group.state_list[0])
-        print("Machine Alphabet:", self.machine.get_alphabet())
         machine.create_alphabet(self.machine.get_alphabet())
         transitions = []
         for state in self.machine.states:
@@ -170,7 +157,6 @@ class MinimizationAlgorithm:
                     if new_trans not in transitions:
                         transitions.append(new_trans)
         for transi in transitions:
-            print("Transitions:", transi[0], transi[1], transi[2])
             machine.create_state(transi[0])
             machine.create_state(transi[2])
             machine.add_transition(transi[0], transi[1], transi[2])
@@ -189,14 +175,13 @@ class MinimizationAlgorithm:
             aux_minimization_group = self.minimization_group.copy()
             for symbol in self.machine.get_alphabet().split(","):
                 symbol_groups = []
-                print("Executing Symbol =>", symbol)
+
                 for group in self.minimization_group:
                     if len(group.state_list) <= 1 or group.state_list is None:
                         continue
-                    print("Group =>", group.group_id)
+
                     new_groups = []
                     for state in group.state_list:
-                        print("State =>", state.state_identifier)
                         group_not_found = True
                         self.machine.set_current_state(state)
                         target_state_list = self.machine.execute_machine_step(symbol)
@@ -204,13 +189,13 @@ class MinimizationAlgorithm:
                             target_state = self.machine.get_state("dead")
                         else:
                             target_state = target_state_list[0]
-                        print("Target State =>", target_state.state_identifier)
+
                         object_target_group = self.get_group_by_id(group.target_group)
-                        print("Original Target Group =>", object_target_group.group_id)
+
                         if target_state not in object_target_group.state_list:
                             group.remove(state.state_identifier)
                             target_id = self.get_new_target(target_state)
-                            print("New Target Group =>", target_id)
+
                             for new_group in new_groups:
                                 if new_group.target_group == target_id:
                                     new_group.append(state)
