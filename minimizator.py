@@ -156,6 +156,7 @@ class MinimizationAlgorithm:
         while len(aux_minimization_group) != len(self.minimization_group):
             aux_minimization_group = self.minimization_group.copy()
             for symbol in self.machine.get_alphabet().split(","):
+                symbol_groups = []
                 print("Executing Symbol =>", symbol)
                 for group in self.minimization_group:
                     if len(group.state_list) <= 1 or group.state_list is None:
@@ -189,12 +190,13 @@ class MinimizationAlgorithm:
                                 )
                                 new_groups.append(new_group)
                                 counter += 1
-
                     for group_new in new_groups:
-                        self.minimization_group.append(group_new)
-                    if counter > 900:
-                        print("ITS JOEVER")
-                        break
+                        symbol_groups.append(group_new)
+                for group_new in symbol_groups:
+                    self.minimization_group.append(group_new)
+                if counter > 900:
+                    print("ITS JOEVER")
+                    break
 
 
 class MinimizationGroup:
