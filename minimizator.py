@@ -170,9 +170,9 @@ class MinimizationAlgorithm:
                 symbol_groups = []
                 print("Transition Symbol -", symbol)
                 for group in self.minimization_group:
+                    new_groups = []
                     if len(group.state_list) <= 1 or group.state_list is None:
                         continue
-                    new_groups = []
                     for state in group.state_list:
                         print("State Identifier: ", state.state_identifier)
                         group_not_found = True
@@ -193,8 +193,11 @@ class MinimizationAlgorithm:
                             target_id = self.get_new_target(target_state)
                             for old_group in new_groups:
                                 if old_group.target_group == target_id:
-                                    print("Old Group", old_group.group_id)
-                                    print("Old Target", old_group.target_group)
+                                    print("Added to Old Group:", old_group.group_id)
+                                    print(
+                                        "Added to Old Target:", old_group.target_group
+                                    )
+                                    print("Added State:", state.state_identifier)
                                     old_group.append(state)
                                     group_not_found = False
                             if group_not_found:
