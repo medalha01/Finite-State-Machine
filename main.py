@@ -15,7 +15,7 @@ def main_mimize():
     machine = MachineFactory.entry_parser(input_string)
     Minimization = MinimizationAlgorithm(machine)
     mini_machine = Minimization.toMachine()
-    print(mini_machine.to_string())
+    print(mini_machine.to_string2())
 
 
 ##main()

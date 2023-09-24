@@ -241,6 +241,52 @@ class Machine:
         # Combine all parts into a single string with semicolons
         return ";".join(parts)
 
+    def to_string2(self):
+        """
+        Convert the DFA object to its string representation.
+
+        Returns:
+            str: The string representation of the DFA object.
+        """
+        # Create a list to hold the parts of the string representation
+        parts = []
+
+        # Add the number of states as the first parameter
+        parts.append(str(self.number_of_states))
+
+        # Add the starting state as the second parameter
+        parts.append(self.starting_state.state_identifier)
+
+        # Add the end states as the third parameter
+        end_states_str = (
+            "{" + "},{".join(state.state_identifier for state in self.end_states) + "}"
+        )
+        parts.append(end_states_str)
+
+        # Add the alphabet as the fourth parameter
+        parts.append("{" + self.alphabet.replace(",&", "") + "}")
+
+        sorted_list = sorted(self.states, key=lambda state: state.state_identifier)
+
+        # Add the transitions as subsequent parameters
+        for state in sorted_list:
+            elements = state.get_transitions()
+            for transition in elements:
+                if transition[0] == "&":
+                    continue
+                transition_string = "{},{},{}".format(
+                    state.state_identifier,
+                    transition[0],  # Input symbol for the transition
+                    transition[1],  # Next state for the transition
+                )
+                parts.append(transition_string)
+        # Combine all parts into a single string with semicolons
+        return ";".join(parts)
+
+    # Example usage:
+    # dfa = ...  # Create your DFA object
+    # print(dfa.to_string())  # Print the string representation of the DFA
+
     def start_machine(self):
         """
         Adds the starting state to the list of current states.
