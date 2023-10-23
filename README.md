@@ -2,7 +2,6 @@
 
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/medalha01/Finite-State-Machine/blob/main/LICENSE)
 
-**Author:** Your Name
 
 **Last Updated:** September 24, 2023
 
@@ -35,9 +34,9 @@ To use this Finite State Machine simulator, follow these steps:
    git clone https://github.com/medalha01/Finite-State-Machine.git
    ```
 
-2. Install any required dependencies:
-   ```shell
-   pip install -r requirements.txt
+2. oPEN THE MAIN FILE:
+   ```
+   Input a FSM string and choose between minimization or determinization.
    ```
 
 3. You're ready to start using the simulator.
